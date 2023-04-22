@@ -101,12 +101,14 @@ void writeDataToLCDPort(String data){
 
 
 void loop() {
-  if(Serial.available() > 4)
-  {
-    readDataFromSerialPort();
-    sendActuatorSignals();
-    writeDataToSerialPort(String(motorDutyCycle)); 
-    writeDataToLCDPort(String(motorDutyCycle));
+  lcd.print("Data received from sensor:");
+  delay(1000);
+  // if(Serial.available() > 4)
+  // {
+  //   readDataFromSerialPort();
+  //   sendActuatorSignals();
+  //   writeDataToSerialPort(String(motorDutyCycle)); 
+  //   writeDataToLCDPort(String(motorDutyCycle));
 
-  }
+  // }
 }
