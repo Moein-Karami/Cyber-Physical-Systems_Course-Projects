@@ -1,7 +1,6 @@
 
 #include <Arduino.h>
 #include "Wire.h"
-#include <LiquidCrystal.h>
 
 // SHT25 I2C address is 0x40(64)
 #define Addr 0x40
@@ -12,11 +11,6 @@
 
 char HUMIDITY_MARKER = 'H';
 char  TEMP_MARKER = 'T';
-
-///  
-const int rs = 12, e=11, d4=5, d5=4, d6=3, d7=2;
-LiquidCrystal lcd(rs,e,d4,d5,d6,d7);
-///
 
 struct tempData{
   float temp;
@@ -31,9 +25,6 @@ bool firstReport = true;
 void setup() {
   Wire.begin();
   Serial.begin(9600);
-  ///
-  lcd.begin(20,4);
-  ///
 }
 
 float readDataFromSensor(int addr, float scale, float offset){
@@ -77,9 +68,7 @@ void updateLastReport(){
 void loop() {
    currTemperatureData.humidity = readDataFromSensor(HUMIDITY_ADDR, 125.0, 6.0);
    currTemperatureData.temp = readDataFromSensor(TEMP_ADDR, 175.72, 46.85);
-  //  lcd.clear();
-  //  lcd.setCursor(0, 0);
-  //  lcd.println(currTemperatureData.humidity);
+
    if(firstReport || humidityHasMajorChange()){
       sendDataToMainBoard();
       updateLastReport();
