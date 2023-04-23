@@ -13,6 +13,11 @@
 char HUMIDITY_MARKER = 'H';
 char  TEMP_MARKER = 'T';
 
+///  
+const int rs = 12, e=11, d4=5, d5=4, d6=3, d7=2;
+LiquidCrystal lcd(rs,e,d4,d5,d6,d7);
+///
+
 struct tempData{
   float temp;
   float humidity;
@@ -26,30 +31,34 @@ bool firstReport = true;
 void setup() {
   Wire.begin();
   Serial.begin(9600);
-
+  ///
+  lcd.begin(20,4);
+  ///
 }
 
-unsigned int* readDataFromSensor(int addr){
+float readDataFromSensor(int addr, float scale, float offset){
   unsigned int data[2];
   Wire.beginTransmission(Addr);
   Wire.write(addr);
   Wire.endTransmission();
+
+  // delay(500);
   Wire.requestFrom(Addr,2);
-  if(Wire.available() == 2 )
-  {
-    data[0] = Wire.read();
-    data[1] = Wire.read();
-    // float humidity = (((data[0] * 256.0 + data[1]) * 125.0) / 65536.0) - 6;
-    // currTemperatureData.humidity = humidity;
-  }
-  return data;
+
+
+  while (Wire.available() < 2)
+    delay(10);
+
+  data[0] = Wire.read();
+  data[1] = Wire.read();
+  return (((data[0] * 256.0 + data[1]) * scale) / 65536.0) - offset;
 
 }
 
 bool humidityHasMajorChange()
 {
   float propper_diff = CHANGE_PERCENT * lastReportedHumidity / 100;
-  if(abs(lastReportedHumidity - currTemperatureData.temp) > propper_diff)
+  if(abs(lastReportedHumidity - currTemperatureData.humidity) > propper_diff)
   {
     return true;
   }
@@ -66,11 +75,11 @@ void updateLastReport(){
 }
 
 void loop() {
-  
-   unsigned int* humidity_data = readDataFromSensor(HUMIDITY_ADDR);
-   unsigned int* temp_data = readDataFromSensor(TEMP_ADDR);
-   currTemperatureData.humidity = ((( humidity_data[0] * 256.0 +  humidity_data[1]) * 125.0) / 65536.0) - 6;
-   currTemperatureData.temp = (((temp_data[0] * 256.0 + temp_data[1]) * 175.72) / 65536.0) - 46.85;
+   currTemperatureData.humidity = readDataFromSensor(HUMIDITY_ADDR, 125.0, 6.0);
+   currTemperatureData.temp = readDataFromSensor(TEMP_ADDR, 175.72, 46.85);
+  //  lcd.clear();
+  //  lcd.setCursor(0, 0);
+  //  lcd.println(currTemperatureData.humidity);
    if(firstReport || humidityHasMajorChange()){
       sendDataToMainBoard();
       updateLastReport();

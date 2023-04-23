@@ -14,13 +14,20 @@ char  TEMP_MARKER = 'T';
 
 int motorSpeed;
 
+///
+const int rs = 12, e=11, d4=5, d5=4, d6=3, d7=2;
+LiquidCrystal lcd(rs,e,d4,d5,d6,d7);
+///
+
 
 void setup() {
-
   Serial.begin(9600);
   pinMode(10, OUTPUT);
   pinMode(9, OUTPUT);
-
+  
+  // ///
+  // lcd.begin(30,10);
+  // ///
 }
 
 void  setMotorSignals()
