@@ -27,11 +27,11 @@ struct tempData{
 
 tempData temperatureData;
 int motorDutyCycle;
+int motorDutyCyclePercent;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(9,OUTPUT);
-  pinMode(8,OUTPUT);
+
   lcd.begin(20,4);
 }
 
@@ -58,43 +58,49 @@ void sendActuatorSignals(){
     if(temperatureData.humidity > PROPPER_HUMIDITY_LEVEL)
     {
       motorDutyCycle = DUTYSYCLE_0;
+      motorDutyCyclePercent = 0;
     }
-    if( temperatureData.humidity <= PROPPER_HUMIDITY_LEVEL && temperatureData.humidity > MODERATE_HUMIDITY_LEVEL)
+    else if( temperatureData.humidity <= PROPPER_HUMIDITY_LEVEL && temperatureData.humidity > MODERATE_HUMIDITY_LEVEL)
     {
       if(temperatureData.temp < PROPPER_TEMPERATURE_LEVEL){
         motorDutyCycle = DUTYSYCLE_0;
+        motorDutyCyclePercent = 0;
       }
       else{
           motorDutyCycle = DUTYCYCLE_10;
+          motorDutyCyclePercent = 10;
       }
     }
-    if( temperatureData.humidity > MIN_HUMIDITY_LEVEL && temperatureData.humidity < MODERATE_HUMIDITY_LEVEL)
+    else if( temperatureData.humidity > MIN_HUMIDITY_LEVEL && temperatureData.humidity <= MODERATE_HUMIDITY_LEVEL)
     {
        motorDutyCycle = DUTYCYCLE_20;
+       motorDutyCyclePercent = 20;
     }
     else{
-      motorDutyCycle = DUTYCYCLE_25; 
+      motorDutyCycle = DUTYCYCLE_25;
+      motorDutyCyclePercent = 25;
     }
 }
 
 
-void writeDataToLCDPort(String data){
+void writeDataToLCDPort(){
   lcd.clear();
+  // lcd.setCursor(0,0);
+  // lcd.print("Data received from sensor:");
   lcd.setCursor(0,0);
-  lcd.print("Data received from sensor:");
-  lcd.setCursor(0,1);
-  lcd.print("Temperature:        ");
-  lcd.setCursor(0, 2); 
-  lcd.print("Humidity:           ");
-  lcd.setCursor(0, 3);  
-  lcd.print("Motor duty cycle:         ");
-  lcd.setCursor(13, 1); 
-  lcd.print(temperatureData.temp);
-  lcd.write(223);  lcd.print("C");
-  lcd.setCursor(13, 2); lcd.print(temperatureData.humidity);
-  lcd.print("%"); 
-  lcd.setCursor(13, 3);
-  lcd.print(data);
+  lcd.print("T: " + String(temperatureData.temp) + "C");
+  lcd.setCursor(0, 1); 
+  lcd.print("H: " + String(temperatureData.humidity) + "%");
+  lcd.setCursor(-4, 2);  
+  lcd.print("MDC: " + String(motorDutyCycle) + " = " + String(motorDutyCyclePercent) + "%");
+
+  // lcd.setCursor(13, 1); 
+  // lcd.print(temperatureData.temp);
+  // lcd.write(223);  lcd.print("C");
+  // lcd.setCursor(13, 2); lcd.print(temperatureData.humidity);
+  // lcd.print("%"); 
+  // lcd.setCursor(13, 3);
+  // lcd.print(data);
 
 }
 
@@ -106,7 +112,7 @@ void loop() {
     readDataFromSerialPort();
     sendActuatorSignals();
     writeDataToSerialPort(String(motorDutyCycle)); 
-    writeDataToLCDPort(String(motorDutyCycle));
+    writeDataToLCDPort();
 
   }
 }
