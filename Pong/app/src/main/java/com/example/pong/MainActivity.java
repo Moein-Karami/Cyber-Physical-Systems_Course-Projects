@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_NORMAL);
 
         timer.schedule(new TimerTask() {
             @Override
@@ -63,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
             float vtheta = event.values[2] * (float)(360 / (2 * 3.14));
             racket.setVtheta(vtheta);
+        }
+        if(sensorListener.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+            float ax = event.values[0];
+            racket.setAx(-ax * 100);
         }
     }
 

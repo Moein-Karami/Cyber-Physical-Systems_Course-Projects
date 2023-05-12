@@ -7,6 +7,8 @@ public class Racket
     private float theta;
     private float length;
     private float vtheta;
+    private float vx;
+    private float ax;
 
     public Racket(float inp_x, float inp_y, float inp_length)
     {
@@ -15,6 +17,8 @@ public class Racket
         length = inp_length;
         theta = 0;
         vtheta = 0;
+        vx = 0;
+        ax = 0;
     }
 
     public float getX() {
@@ -59,5 +63,23 @@ public class Racket
     public void update(float timeSample)
     {
         theta += vtheta * timeSample;
+//        x += (1/2) * ax * (timeSample * timeSample);
+        x += (float)1/2 * ax * timeSample * timeSample;
+    }
+
+    public float getVx() {
+        return vx;
+    }
+
+    public void setVx(float vx) {
+        this.vx = vx;
+    }
+
+    public float getAx() {
+        return ax;
+    }
+
+    public void setAx(float ax) {
+        this.ax = ax;
     }
 }
