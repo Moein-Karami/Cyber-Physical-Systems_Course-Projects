@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         circle = new Circle(25, 5,  (float)30);
-        racket = new Racket(1, 1, 1);
+        racket = new Racket(25, 90, 16);
         MainBoardCanvas boardCanvas = new MainBoardCanvas(this, circle, racket);
         setContentView(boardCanvas);
     }

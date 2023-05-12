@@ -2,38 +2,38 @@ package com.example.pong;
 
 public class Racket
 {
-    private int x;
-    private int y;
-    private int length;
+    private float x;
+    private float y;
+    private float length;
 
-    public Racket(int inp_x, int inp_y, int inp_length)
+    public Racket(float inp_x, float inp_y, float inp_length)
     {
         x = inp_x;
         y = inp_y;
         length = inp_length;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public int getLength() {
+    public float getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(float length) {
         this.length = length;
     }
 }
