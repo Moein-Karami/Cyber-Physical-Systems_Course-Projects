@@ -4,6 +4,7 @@ public class Racket
 {
     private float x;
     private float y;
+    private float theta;
     private float length;
 
     public Racket(float inp_x, float inp_y, float inp_length)
@@ -11,6 +12,7 @@ public class Racket
         x = inp_x;
         y = inp_y;
         length = inp_length;
+        theta = 0;
     }
 
     public float getX() {
@@ -35,5 +37,13 @@ public class Racket
 
     public void setLength(float length) {
         this.length = length;
+    }
+
+    public float getTheta() {
+        return theta;
+    }
+
+    public void setTheta(float theta) {
+        this.theta = theta;
     }
 }
