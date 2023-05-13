@@ -30,13 +30,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private Sensor gyroscope;
     private Sensor accelerometer;
+
+    MainBoardCanvas boardCanvas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        Log.d("MainActivity", "HELOOOO");
         super.onCreate(savedInstanceState);
         circle = new Circle(25, 5,  (float)30);
         racket = new Racket(25, 90, 16);
-        MainBoardCanvas boardCanvas = new MainBoardCanvas(this, circle, racket);
+        boardCanvas = new MainBoardCanvas(this, circle, racket);
         setContentView(boardCanvas);
 
         timer = new Timer();
@@ -65,11 +67,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
             float vtheta = event.values[2] * (float)(360 / (2 * 3.14));
             racket.setVtheta(vtheta);
+            boardCanvas.invalidate();
         }
         if(sensorListener.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             float ax = event.values[0];
             racket.setAx(-ax * 100);
+            boardCanvas.invalidate();
         }
     }
 

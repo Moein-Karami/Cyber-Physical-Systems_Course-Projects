@@ -63,8 +63,8 @@ public class Racket
     public void update(float timeSample)
     {
         theta += vtheta * timeSample;
-//        x += (1/2) * ax * (timeSample * timeSample);
-        x += (float)1/2 * ax * timeSample * timeSample;
+        x += (float)1/2 * ax * timeSample * timeSample + vx * timeSample;
+//        vx += timeSample * ax;
     }
 
     public float getVx() {
