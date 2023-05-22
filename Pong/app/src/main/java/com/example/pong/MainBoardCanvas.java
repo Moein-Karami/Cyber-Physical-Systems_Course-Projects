@@ -57,5 +57,4 @@ public class MainBoardCanvas extends View
         canvas.drawCircle((circle.getX() / 50) * x, (circle.getY() / 100) * y
                 , circle.getRadius(), paintCircle);
     }
-
 }

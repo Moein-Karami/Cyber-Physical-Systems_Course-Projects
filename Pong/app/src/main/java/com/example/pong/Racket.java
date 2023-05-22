@@ -95,8 +95,8 @@ public class Racket
         float x0_racket = x - length / 2;
         float x1_racket = x + length / 2;
 
-        Log.d("Y0 out", String.valueOf(y0));
-        Log.d("Y1 out", String.valueOf(y1));
+//        Log.d("Y0 out", String.valueOf(y0));
+//        Log.d("Y1 out", String.valueOf(y1));
 
         if(y0 > y - 1)
             return false;
@@ -104,7 +104,6 @@ public class Racket
             return false;
         if(x1 > x1_racket || x1 < x0_racket)
             return false;
-//        Log.d("Y1 out", String.valueOf(y1));
         return true;
     }
 }

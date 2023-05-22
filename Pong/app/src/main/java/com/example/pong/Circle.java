@@ -76,5 +76,9 @@ public class Circle
         }
         return false;
     }
+
+    public void update_after_wall() {
+        vx = -vx;
+    }
 }
 

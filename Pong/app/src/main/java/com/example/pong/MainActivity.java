@@ -57,15 +57,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 circle.update((float)0.001);
                 racket.update((float)0.001);
                 racket.collide(circle, (float)0.001);
+                Log.d("Positionx", String.valueOf(circle.getX()));
+                Log.d("Positiony", String.valueOf(circle.getY()));
                 if(racket.collide(circle, (float)0.001))
                 {
-                    Log.d("Collide", String.valueOf(circle.getVx()));
                     circle.update_after_collide(racket.getTheta() * (float)(3.14 / 360));
                 }
                 if(circle.collide_wall())
                 {
-                    Log.d("Collide Wall", String.valueOf(circle.getVx()));
-                    circle.update_after_collide((float)asin(circle.getY() / circle.getVx()));
+                    Log.d("Collide Wall", String.valueOf(circle.getVy()));
+                    circle.update_after_wall();
                 }
                 boardCanvas.invalidate();
             }
