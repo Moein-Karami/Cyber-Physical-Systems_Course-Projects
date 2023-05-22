@@ -1,5 +1,7 @@
 package com.example.pong;
 
+import static java.lang.Math.asin;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     MainBoardCanvas boardCanvas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Log.d("MainActivity", "HELOOOO");
+        Log.d("MainActivity", "HELOOOO");
         super.onCreate(savedInstanceState);
         circle = new Circle(25, 5,  (float)30);
         racket = new Racket(25, 90, 16);
@@ -54,6 +56,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void run() {
                 circle.update((float)0.001);
                 racket.update((float)0.001);
+                racket.collide(circle, (float)0.001);
+                if(racket.collide(circle, (float)0.001))
+                {
+                    Log.d("Collide", String.valueOf(circle.getVx()));
+                    circle.update_after_collide(racket.getTheta() * (float)(3.14 / 360));
+                }
+                if(circle.collide_wall())
+                {
+                    Log.d("Collide Wall", String.valueOf(circle.getVx()));
+                    circle.update_after_collide((float)asin(circle.getY() / circle.getVx()));
+                }
                 boardCanvas.invalidate();
             }
         }, 0, 1);

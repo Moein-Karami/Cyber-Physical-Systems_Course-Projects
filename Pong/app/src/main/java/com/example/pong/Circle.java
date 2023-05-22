@@ -1,5 +1,8 @@
 package com.example.pong;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 public class Circle
 {
     private float x;
@@ -46,8 +49,32 @@ public class Circle
     {
         x += vx * timeFall;
         y += vy * timeFall;
-        vy += 10 * timeFall;
+        vy += 15 * timeFall;
     }
 
+    public float getVy() {
+        return vy;
+    }
+    public float getVx()
+    {
+        return vx;
+    }
+
+    public void update_after_collide(float theta)
+    {
+        float vx_new = (float)(vx * cos(2 * theta)) + (float)(vy * sin(2 * theta));
+        float vy_new = (float)(- vx * sin(2 * theta)) + (float)(-vy * cos(2 * theta));
+        vx = vx_new;
+        vy = vy_new;
+    }
+
+    public boolean collide_wall()
+    {
+        if(x < 0 || x > 50)
+        {
+            return true;
+        }
+        return false;
+    }
 }
 

@@ -1,5 +1,7 @@
 package com.example.pong;
 
+import android.util.Log;
+
 public class Racket
 {
     private float x;
@@ -81,5 +83,28 @@ public class Racket
 
     public void setAx(float ax) {
         this.ax = ax;
+    }
+
+    public boolean collide(Circle circle, float timeFall) {
+
+        float y0 = circle.getY() - circle.getVy() * timeFall;
+        float y1 = circle.getY();
+        float x0 = circle.getX() - circle.getVx() * timeFall;
+        float x1 = circle.getX();
+
+        float x0_racket = x - length / 2;
+        float x1_racket = x + length / 2;
+
+        Log.d("Y0 out", String.valueOf(y0));
+        Log.d("Y1 out", String.valueOf(y1));
+
+        if(y0 > y - 1)
+            return false;
+        if(y1 < y - 1)
+            return false;
+        if(x1 > x1_racket || x1 < x0_racket)
+            return false;
+//        Log.d("Y1 out", String.valueOf(y1));
+        return true;
     }
 }
