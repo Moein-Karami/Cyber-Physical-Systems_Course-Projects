@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         proxi_sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, proxi_sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
         timer.schedule(new TimerTask() {
