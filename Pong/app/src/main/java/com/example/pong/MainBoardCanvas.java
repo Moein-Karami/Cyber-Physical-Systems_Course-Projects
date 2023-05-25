@@ -42,8 +42,7 @@ public class MainBoardCanvas extends View
         float ymax = racket.getY() + 1;
         float xmax = min(50, racket.getX() + racket.getLength() / 2);
         canvas.save();
-        canvas.rotate(racket.getTheta(), ((xmin / 50) * x + (xmax / 50) * x) / 2,
-                ((ymin / 100) * y + (ymax / 100) * y) / 2);
+        canvas.rotate(racket.getTheta(), (racket.getX() / 50)* x, (racket.getY() / 100) * y);
         canvas.drawRect((xmin / 50) * x, (ymax / 100) * y, (xmax / 50) * x,
                 (ymin / 100) * y, paintRacket);
         canvas.restore();
@@ -55,7 +54,6 @@ public class MainBoardCanvas extends View
         paintCircle.setStyle(Paint.Style.FILL);
         paintCircle.setColor(Color.WHITE);
         canvas.drawCircle((circle.getX() / 50) * x, (circle.getY() / 100) * y
-                , circle.getRadius(), paintCircle);
+                , (circle.getRadius() / 50) * x, paintCircle);
     }
-
 }
