@@ -3,6 +3,8 @@ package com.example.pong;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import android.util.Log;
+
 public class Circle
 {
     private float x;
@@ -47,9 +49,10 @@ public class Circle
 
     public void update(float timeFall)
     {
+//        Log.d("Y0 out", String.valueOf(aCircleUp));
         x += vx * timeFall;
         y += vy * timeFall;
-        vy += 15 * timeFall;
+        vy += (15) * timeFall;
     }
 
     public float getVy() {
@@ -74,11 +77,29 @@ public class Circle
         {
             return true;
         }
+        if(y < 0)
+            return true;
         return false;
     }
 
     public void update_after_wall() {
-        vx = -vx;
+        if(y < 0) {
+            vy = -vy;
+            y = 0;
+        }
+        else
+            vx = -vx;
+    }
+
+    public void init() {
+        x = 25;
+        y = 5;
+        vx = 0;
+        vy = 0;
+    }
+
+    public void setVy(float v) {
+        vy = v;
     }
 }
 
