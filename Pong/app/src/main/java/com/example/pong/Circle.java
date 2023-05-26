@@ -1,9 +1,8 @@
 package com.example.pong;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-
-import android.util.Log;
 
 public class Circle
 {
@@ -63,12 +62,26 @@ public class Circle
         return vx;
     }
 
-    public void update_after_collide(float theta)
+    public void update_after_collide(float theta, float aCircleUp)
     {
         float vx_new = (float)(vx * cos(2 * theta)) + (float)(vy * sin(2 * theta));
         float vy_new = (float)(- vx * sin(2 * theta)) + (float)(-vy * cos(2 * theta));
-        vx = vx_new;
-        vy = vy_new;
+        vx = (float) (vx_new);
+        if(aCircleUp > 0) {
+            float mult = 1;
+            if(vy_new < 0)
+                mult = -1;
+            vy = (float) (vy_new +  mult * aCircleUp * 0.003);
+            mult = 1;
+            if(vx_new < 0)
+                mult = -1;
+            vx = (float) (vx_new + mult * aCircleUp * 0.003);
+        }
+
+        else {
+            vy = vy_new;
+            vx = vx_new;
+        }
     }
 
     public boolean collide_wall()
@@ -100,6 +113,10 @@ public class Circle
 
     public void setVy(float v) {
         vy = v;
+    }
+
+    public void updateGravity(float timeFall) {
+        vy += (15) * timeFall;
     }
 }
 
