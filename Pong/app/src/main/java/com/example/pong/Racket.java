@@ -16,6 +16,10 @@ public class Racket
     private int last_stop = 0;
     private int still_zero = 0;
     private int opposite_direction = 0;
+
+    private float gravity_vx = 0;
+    private float gravity_ax = 0;
+
     public Racket(float inp_x, float inp_y, float inp_length)
     {
         x = inp_x;
@@ -71,12 +75,14 @@ public class Racket
         theta += vtheta * timeSample;
     }
 
-    private float max_ax = 0;
-
-    public void update_x(float timeSample)
+    public void update_gravity_x(float timeSample)
     {
-        max_ax = Math.max(Math.abs(ax), max_ax);
-        Log.d("Max ax", Float.toString(max_ax));
+        x += 0.5f * timeSample * timeSample * gravity_ax + timeSample * gravity_vx;
+//        gravity_vx += timeSample * gravity_ax;
+        Log.d("time sample: ", Float.toString(timeSample));
+    }
+    public void update_linear_x(float timeSample)
+    {
         last_stop --;
 //        if (Math.abs(ax) > 100)
 //            ax = 100 * ax / ax;
@@ -151,7 +157,9 @@ public class Racket
         this.ax = ax;
     }
 
-
+    public void set_gravity_Ax(float ax) {
+        this.gravity_ax = ax;
+    }
 
     public void init() {
         x = 25;

@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private SensorManager sensorManager;
     private Sensor gyroscope;
+    private Sensor linear_accelerometer;
     private Sensor accelerometer;
 
     private Sensor proxi_sensor;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float last_ax = 0;
 
     private  long s2n = 1000000000;
-    private long last_sample = 0;
+    private long last_linear_sample = 0;
+    private long last_gravity_sample = 0;
 
     private float aCircleUp;
 
@@ -60,11 +62,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        linear_accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         proxi_sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, proxi_sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
         timer.schedule(new TimerTask() {
@@ -87,8 +91,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensorListener = event.sensor;
-        if (last_sample == 0)
-            last_sample = event.timestamp;
+        if (last_linear_sample == 0)
+            last_linear_sample = event.timestamp;
+        if (last_gravity_sample == 0)
+            last_gravity_sample = event.timestamp;
 
         if(sensorListener.getType() == Sensor.TYPE_GYROSCOPE)
         {
@@ -109,8 +115,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             last_ax = tmp;
             Log.d("got acc : ", Float.toString(ax));
             racket.setAx((float) (ax * 132));
-            racket.update_x((float)((float) event.timestamp - last_sample) / s2n);
-            last_sample = event.timestamp;
+            racket.update_linear_x((float)((float) event.timestamp - last_linear_sample) / s2n);
+            last_linear_sample = event.timestamp;
+            boardCanvas.invalidate();
+        }
+        if (sensorListener.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+            float ax = event.values[0];
+
+            float tmp = ax;
+//            ax = 0.5f* ax + 0.5f * last_ax;
+            last_ax = tmp;
+            racket.set_gravity_Ax((float) (-400 * ax));
+            racket.update_gravity_x((float)((float) event.timestamp - last_gravity_sample) / s2n);
+            last_gravity_sample = event.timestamp;
             boardCanvas.invalidate();
         }
     }
