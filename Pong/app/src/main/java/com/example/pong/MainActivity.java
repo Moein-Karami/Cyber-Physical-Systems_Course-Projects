@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
+//        sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, proxi_sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
         timer.schedule(new TimerTask() {
@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int mode = boardCanvas.getState();
 //        mode = 1;
         Sensor sensorListener = event.sensor;
-        if (last_linear_sample == 0)
-            last_linear_sample = event.timestamp;
-        if (last_gravity_sample == 0)
-            last_gravity_sample = event.timestamp;
+//        if (last_linear_sample == 0)
+//            last_linear_sample = event.timestamp;
+//        if (last_gravity_sample == 0)
+//            last_gravity_sample = event.timestamp;
 
         if(sensorListener.getType() == Sensor.TYPE_GYROSCOPE)
         {
@@ -112,8 +112,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if(sensorListener.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
         {
-            aCircleUp = (float) (event.values[1] * 200 * (50/20));
-
+            aCircleUp = (float) (Math.abs(event.values[1]) * 500 * (50/20));
+            if ((float)((float) event.timestamp - last_linear_sample) / s2n > 0.1)
+                last_linear_sample = event.timestamp;
 
             float ax = event.values[0];
 //            alast += (0.1) * (ax - alast);
@@ -131,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if (sensorListener.getType() == Sensor.TYPE_ACCELEROMETER)
         {
+            if ((float)((float) event.timestamp - last_gravity_sample) / s2n > 0.1f)
+                last_gravity_sample = event.timestamp;
+
             float ax = event.values[0];
 
 //            float tmp = ax;
@@ -177,6 +181,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mode_changed = 10;
             boardCanvas.invalidate();
             boardCanvas.change_state();
+
+            if(boardCanvas.getState() == 1)
+            {
+                sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
+                sensorManager.unregisterListener(this, linear_accelerometer);
+                sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_GAME);
+            }
+            else if (boardCanvas.getState() == 0)
+            {
+                sensorManager.unregisterListener(this, accelerometer);
+            }
         }
 
         return true;
