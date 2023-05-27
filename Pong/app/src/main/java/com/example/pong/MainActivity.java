@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private float aCircleUp;
 
+    private int mode_changed = 0;
+
     MainBoardCanvas boardCanvas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        int mode = boardCanvas.getState();
+//        mode = 1;
         Sensor sensorListener = event.sensor;
         if (last_linear_sample == 0)
             last_linear_sample = event.timestamp;
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if(sensorListener.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
         {
-            aCircleUp = (float) (event.values[1] * 100 * (50/20));
+            aCircleUp = (float) (event.values[1] * 200 * (50/20));
 
 
             float ax = event.values[0];
@@ -117,8 +121,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             ax = 0.5f* ax + 0.5f * last_ax;
             last_ax = tmp;
             Log.d("got acc : ", Float.toString(ax));
-            racket.setAx((float) (ax * 132));
-            racket.update_linear_x((float)((float) event.timestamp - last_linear_sample) / s2n);
+            if (mode != 1)
+            {
+                racket.setAx((float) (ax * 132));
+                racket.update_linear_x((float)((float) event.timestamp - last_linear_sample) / s2n);
+            }
             last_linear_sample = event.timestamp;
             boardCanvas.invalidate();
         }
@@ -126,14 +133,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
             float ax = event.values[0];
 
-            float tmp = ax;
+//            float tmp = ax;
 //            ax = 0.5f* ax + 0.5f * last_ax;
-            last_ax = tmp;
+//            last_ax = tmp;
             racket.set_gravity_Ax((float) (-400 * ax));
-            racket.update_gravity_x((float)((float) event.timestamp - last_gravity_sample) / s2n);
+            if (mode != 0)
+                racket.update_gravity_x((float)((float) event.timestamp - last_gravity_sample) / s2n);
             last_gravity_sample = event.timestamp;
             boardCanvas.invalidate();
         }
+
+//        mode_changed --;
+//        if (mode_changed > 0)
+//        {
+//            racket.setX(25);
+//        }
+        boardCanvas.invalidate();
     }
 
     @Override
@@ -159,13 +174,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             lastTimeTouch = time;
             circle.init();
             racket.init();
+            mode_changed = 10;
             boardCanvas.invalidate();
-            if(boardCanvas.getState() == 2)
-            {
-                boardCanvas.setState(0);
-            }
-            else
-                boardCanvas.setState(boardCanvas.getState() + 1);
+            boardCanvas.change_state();
         }
 
         return true;

@@ -73,6 +73,17 @@ public class Racket
     public void update(float timeSample)
     {
         theta += vtheta * timeSample;
+        if (x > 54 || x < -4)
+        {
+            x = Math.max(x, -4);
+            x = Math.min(x, 54);
+            ax = 0;
+            vx = 0;
+            gravity_ax = 0;
+//            last_stop = 50;
+        }
+
+        Log.d("curr x: ", Float.toString(x));
     }
 
     public void update_gravity_x(float timeSample)
@@ -127,15 +138,6 @@ public class Racket
         x += 1.0f/2.0f * ax * timeSample * timeSample + vx * timeSample;
         vx += ax * timeSample;
 
-        if (x > 54 || x < -4)
-        {
-            x = Math.max(x, -4);
-            x = Math.min(x, 54);
-            ax = 0;
-            vx = 0;
-//            last_stop = 50;
-        }
-
         Log.d("curr x : ", Float.toString(x));
         Log.d("curr acc : ", Float.toString(ax));
         Log.d("curr vel : ", Float.toString(vx));
@@ -168,6 +170,11 @@ public class Racket
         theta = 0;
         vx = 0;
         ax = 0;
+        last_stop = 0;
+        still_zero = 0;
+        opposite_direction = 0;
+        gravity_ax = 0;
+
     }
 
     public float rotatex(float x0, float x1, float y0, float y1, float theta0)
