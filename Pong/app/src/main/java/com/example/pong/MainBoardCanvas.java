@@ -15,13 +15,25 @@ public class MainBoardCanvas extends View
 {
     private Circle circle;
     private Racket racket;
+
+    private int state;
     public MainBoardCanvas(Context context, Circle inp_circle, Racket inp_racket)
     {
         super(context);
         circle = inp_circle;
         racket = inp_racket;
+        state = 0;
     }
 
+    public int getState()
+    {
+        return state;
+    }
+
+    public void setState(int inp_state)
+    {
+        state = inp_state;
+    }
     @Override
     protected void onDraw(Canvas canvas)
     {
@@ -35,6 +47,16 @@ public class MainBoardCanvas extends View
         paintText.setTextSize(40);
         canvas.drawText(String.valueOf(racket.getAx()), 100, 100, paintText);
         canvas.drawText(String.valueOf(racket.getVx()), 100, 150, paintText);
+        if(state == 0)
+        {
+            canvas.drawText("Linear Mode", 800, 150, paintText);
+        }
+        else if(state == 1)
+        {
+            canvas.drawText("Gravity Mode", 800, 150, paintText);
+        }
+        else
+            canvas.drawText("Both Mode", 800, 150, paintText);
     }
 
     private void drawRacket(float x, float y, Canvas canvas)
