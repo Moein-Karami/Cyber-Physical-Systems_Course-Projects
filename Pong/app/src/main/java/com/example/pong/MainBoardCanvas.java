@@ -25,18 +25,23 @@ public class MainBoardCanvas extends View
     @Override
     protected void onDraw(Canvas canvas)
     {
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.WHITE);
         float x = getWidth();
         float y = getHeight();
         drawBall(x, y, canvas);
         drawRacket(x, y, canvas);
+        Paint paintText = new Paint();
+        paintText.setColor(Color.BLACK);
+        paintText.setTextSize(40);
+        canvas.drawText(String.valueOf(racket.getAx()), 100, 100, paintText);
+        canvas.drawText(String.valueOf(racket.getVx()), 100, 150, paintText);
     }
 
     private void drawRacket(float x, float y, Canvas canvas)
     {
         Paint paintRacket = new Paint();
         paintRacket.setStyle(Paint.Style.FILL);
-        paintRacket.setColor(Color.GRAY);
+        paintRacket.setColor(Color.GREEN);
         float xmin = max(racket.getX() - racket.getLength() / 2, 0);
         float ymin = racket.getY() - 1;
         float ymax = racket.getY() + 1;
@@ -52,7 +57,7 @@ public class MainBoardCanvas extends View
     {
         Paint paintCircle = new Paint();
         paintCircle.setStyle(Paint.Style.FILL);
-        paintCircle.setColor(Color.WHITE);
+        paintCircle.setColor(Color.BLUE);
         canvas.drawCircle((circle.getX() / 50) * x, (circle.getY() / 100) * y
                 , (circle.getRadius() / 50) * x, paintCircle);
     }
