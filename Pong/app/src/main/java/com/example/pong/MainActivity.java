@@ -185,13 +185,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(boardCanvas.getState() == 1)
             {
                 sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_GAME);
-                sensorManager.unregisterListener(this, linear_accelerometer);
-                sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_GAME);
+//                sensorManager.unregisterListener(this, linear_accelerometer);
+//                sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_GAME);
             }
             else if (boardCanvas.getState() == 0)
             {
                 sensorManager.unregisterListener(this, accelerometer);
             }
+//            else
+//            {
+////                sensorManager.unregisterListener(this, linear_accelerometer);
+////                sensorManager.registerListener(this, linear_accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
+//            }
         }
 
         return true;
