@@ -51,7 +51,7 @@ public class Circle
 //        Log.d("Y0 out", String.valueOf(aCircleUp));
         x += vx * timeFall;
         y += vy * timeFall;
-        vy += (15) * timeFall;
+        vy += (66) * timeFall;
     }
 
     public float getVy() {
