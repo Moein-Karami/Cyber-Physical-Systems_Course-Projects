@@ -30,9 +30,9 @@ public class MainBoardCanvas extends View
         return state;
     }
 
-    public void setState(int inp_state)
+    public void change_state()
     {
-        state = inp_state;
+        state = (state + 1) % 3;
     }
     @Override
     protected void onDraw(Canvas canvas)

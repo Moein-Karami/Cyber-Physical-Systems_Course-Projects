@@ -13,18 +13,12 @@ public class Racket
     private float vtheta;
     private float vx;
     private float ax;
-    private float ax_last;
-
     private int last_stop = 0;
-
     private int still_zero = 0;
-
-    int count;
-    int lastCollide;
-
-    int cnt = 0;
-
     private int opposite_direction = 0;
+
+    private float gravity_vx = 0;
+    private float gravity_ax = 0;
 
     public Racket(float inp_x, float inp_y, float inp_length)
     {
@@ -35,9 +29,6 @@ public class Racket
         vtheta = 0;
         vx = 0;
         ax = 0;
-        ax_last = 0;
-        count = 0;
-        lastCollide = 0;
     }
 
     public float getX() {
@@ -82,18 +73,42 @@ public class Racket
     public void update(float timeSample)
     {
         theta += vtheta * timeSample;
+        if (x > 54 || x < -4)
+        {
+            x = Math.max(x, -4);
+            x = Math.min(x, 54);
+            ax = 0;
+            vx = 0;
+            gravity_ax = 0;
+//            last_stop = 50;
+        }
+
+        Log.d("curr x: ", Float.toString(x));
     }
 
-    public void update_x(float timeSample)
+    public void update_gravity_x(float timeSample)
+    {
+        x += 0.5f * timeSample * timeSample * gravity_ax + timeSample * gravity_vx;
+//        gravity_vx += timeSample * gravity_ax;
+        Log.d("time sample: ", Float.toString(timeSample));
+    }
+    public void update_linear_x(float timeSample)
     {
         last_stop --;
 //        if (Math.abs(ax) > 100)
 //            ax = 100 * ax / ax;
 
-        if (Math.abs(ax) < 2.0f)
+        if (Math.abs(ax) > 750)
+            last_stop = 0;
+        if (Math.abs(ax) < 3.0f)
             ax = 0;
 //        if (Math.abs(vx) < 1.0f)
 //            vx = 0;
+
+        if (ax == 0)
+            still_zero ++;
+        else
+            still_zero = 0;
 
         if (ax * vx < 0)
             opposite_direction ++;
@@ -102,19 +117,13 @@ public class Racket
 
         if (last_stop > 0)
         {
-            if (ax == 0)
-                last_stop = 0;
             ax = 0;
             vx = 0;
         }
 
-        if (ax == 0)
-            still_zero ++;
-        else
-            still_zero = 0;
-
         if (still_zero > 2)
         {
+            last_stop = 0;
             ax = 0;
             vx = 0;
         }
@@ -128,15 +137,6 @@ public class Racket
 
         x += 1.0f/2.0f * ax * timeSample * timeSample + vx * timeSample;
         vx += ax * timeSample;
-
-        if (x > 54 || x < -4)
-        {
-            x = Math.max(x, -4);
-            x = Math.min(x, 54);
-            ax = 0;
-            vx = 0;
-//            last_stop = 50;
-        }
 
         Log.d("curr x : ", Float.toString(x));
         Log.d("curr acc : ", Float.toString(ax));
@@ -159,7 +159,9 @@ public class Racket
         this.ax = ax;
     }
 
-
+    public void set_gravity_Ax(float ax) {
+        this.gravity_ax = ax;
+    }
 
     public void init() {
         x = 25;
@@ -168,6 +170,11 @@ public class Racket
         theta = 0;
         vx = 0;
         ax = 0;
+        last_stop = 0;
+        still_zero = 0;
+        opposite_direction = 0;
+        gravity_ax = 0;
+
     }
 
     public float rotatex(float x0, float x1, float y0, float y1, float theta0)
