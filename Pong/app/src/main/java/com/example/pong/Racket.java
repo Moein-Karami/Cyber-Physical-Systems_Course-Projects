@@ -18,6 +18,8 @@ public class Racket
     int count;
     int lastCollide;
 
+    int cnt = 0;
+
     public Racket(float inp_x, float inp_y, float inp_length)
     {
         x = inp_x;
@@ -77,8 +79,18 @@ public class Racket
         theta += vtheta * timeSample;
         x += (float)1/2 * ax * timeSample * timeSample + vx * timeSample;
         vx += timeSample * ax;
-        if(ax_last * ax < 0)
+//        if(ax_last * ax < 0)
+//        {
+////            x += vx * 0.002;
+//            vx /= 4;
+//        }
+        if(ax * vx < 0)
+            cnt++;
+        else
+            cnt = 0;
+        if(cnt >= 10)
         {
+            cnt = 0;
             vx = 0;
         }
         ax_last = ax;
@@ -112,48 +124,7 @@ public class Racket
         this.ax = ax;
     }
 
-    public boolean collide(Circle circle, float timeFall) {
 
-        float y0 = circle.getY() - circle.getVy() * timeFall;
-        float y1 = circle.getY();
-        float x0 = circle.getX() - circle.getVx() * timeFall;
-        float x1 = circle.getX();
-
-        float r = circle.getRadius();
-
-        count++;
-
-
-
-        if(checkCollide(x1, y1, r) && !checkCollide(x0, y0, r) && (lastCollide < (count - 5))) {
-            Log.d("Last Collide", String.valueOf(lastCollide));
-            Log.d("Count", String.valueOf(count));
-            lastCollide = count;
-
-            return true;
-        }
-        return false;
-//
-//        float x0_racket = x - length / 2;
-//        float x1_racket = x + length / 2;
-//
-//        Log.d("Y0 out", String.valueOf(y0));
-//        Log.d("Y1 out", String.valueOf(y1));
-//
-//        if(y0 > y - 1)
-//            return false;
-//        if(y1 < y - 1)
-//            return false;
-//        if(x1 > x1_racket || x1 < x0_racket)
-//            return false;
-//        return true;
-    }
-
-    private boolean checkCollide(float x1, float y1, float r) {
-        return (isPointInside(x1, y1 - r, 1) || isPointInside(x1, y1 + r, 1)
-                || isPointInside(x1 + r, y1, 1) || isPointInside(x1 - r, y1, 1)
-                || isPointInside(x1, y1, 1));
-    }
 
     public void init() {
         x = 25;
@@ -186,15 +157,6 @@ public class Racket
         float ymin = y - width;
         float ymax = y + width;
 
-//        Log.d("On Touch X", String.valueOf(x_touch));
-//        Log.d("On Touch Y", String.valueOf(y_touch));
-//        Log.d("On Touch X Rotated", String.valueOf(x0));
-//        Log.d("On Touch Y Rotated", String.valueOf(y0));
-//        Log.d("Theta", String.valueOf(theta));
-//        Log.d("X min", String.valueOf(xmin));
-//        Log.d("X max", String.valueOf(xmax));
-//        Log.d("Y min", String.valueOf(ymin));
-//        Log.d("Y max", String.valueOf(ymax));
 
         if(xmax < x0)
             return false;
@@ -203,6 +165,48 @@ public class Racket
         if(ymax < y0)
             return false;
         if(ymin > y0)
+            return false;
+        return true;
+    }
+
+    public void handle_collide(Circle circle, float timeFall, float aCircleUp)
+    {
+        float y0 = circle.getY() - circle.getVy() * timeFall;
+        float y1 = circle.getY();
+        float x0 = circle.getX() - circle.getVx() * timeFall;
+        float x1 = circle.getX();
+
+        float r = circle.getRadius();
+        for(int i = 0; i <= 100; i++) {
+            y1 = y0 + circle.getVy() * timeFall * (float)(i / 100);
+            x1 = x0 + circle.getVx() * timeFall * (float)(i / 100);
+            if ((insideLineFirst(x1, y1) && !insideLineFirst(x0, y0))
+            || (insideLineFirst(x1, y1 + r) && !insideLineFirst(x0, y0 + r)) ||
+            (insideLineFirst(x1, y1 - r) && !insideLineFirst(x0, y0 - r) ||
+                    (insideLineFirst(x1 + r, y1) && !insideLineFirst(x0 + r, y0)) ||
+                    (insideLineFirst(x1 - r, y1) && !insideLineFirst(x0 - r, y0)))) {
+                circle.update_after_collide(getTheta() * (float) (3.14 / 180), aCircleUp);
+                return;
+            }
+        }
+        if(y1 <= 100) {
+            Log.d("x", String.valueOf(x1));
+            Log.d("y", String.valueOf(y1));
+        }
+    }
+
+
+    private boolean insideLineFirst(float x0, float y0)
+    {
+        float x_new = rotatex(x0, x, y0, y, 180 - theta);
+        float y_new = rotatey(x0, x, y0, y, 180 - theta);
+        if(x_new > length / 2 + x)
+            return false;
+        if(x_new < x - length / 2)
+            return false;
+        if(y_new > y + 1)
+            return false;
+        if(y_new < y - 1)
             return false;
         return true;
     }

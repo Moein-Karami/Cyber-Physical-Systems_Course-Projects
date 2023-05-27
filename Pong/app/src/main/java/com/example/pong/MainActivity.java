@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         proxi_sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_GAME);
@@ -67,19 +67,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void run() {
                 circle.update((float)0.001);
                 racket.update((float)0.001);
-//                racket.collide(circle, (float)0.001);
-//                Log.d("Positionx", String.valueOf(circle.getX()));
-//                Log.d("Positiony", String.valueOf(circle.getY()));
-                if(racket.collide(circle, (float)0.001))
-                {
-                    circle.update_after_collide(racket.getTheta() * (float)(3.14 / 180));
-                    circle.setVy((float) (circle.getVy() - aCircleUp * 0.02));
-                }
+
+                racket.handle_collide(circle, (float)0.001, aCircleUp);
                 if(circle.collide_wall())
                 {
-//                    Log.d("Collide Wall", String.valueOf(circle.getVy()));
                     circle.update_after_wall();
                 }
+                circle.updateGravity((float) 0.001);
                 boardCanvas.invalidate();
             }
         }, 0, 1);
@@ -96,14 +90,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             boardCanvas.invalidate();
 
         }
-        if(sensorListener.getType() == Sensor.TYPE_ACCELEROMETER)
+        if(sensorListener.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
         {
             float ax = event.values[0];
-            aCircleUp = (float) (event.values[1] * 100 * (50/20));
-//            float ax_avg = (float) (ax * 0.1 + alast);
-//            Log.d("Y0 out", String.valueOf(y0));
+            aCircleUp = (float) (event.values[2] * 100 * (50/20));
             alast += (0.1) * (ax - alast);
-            racket.setAx((float) (-ax * 10 * (50 / 20)));
+            racket.setAx((float) (-alast * 100));
             boardCanvas.invalidate();
         }
     }
