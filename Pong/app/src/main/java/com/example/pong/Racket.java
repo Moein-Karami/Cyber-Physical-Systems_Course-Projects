@@ -15,10 +15,16 @@ public class Racket
     private float ax;
     private float ax_last;
 
+    private int last_stop = 0;
+
+    private int still_zero = 0;
+
     int count;
     int lastCollide;
 
     int cnt = 0;
+
+    private int opposite_direction = 0;
 
     public Racket(float inp_x, float inp_y, float inp_length)
     {
@@ -75,37 +81,66 @@ public class Racket
     }
     public void update(float timeSample)
     {
-//        ax += 15 * Math.sin(theta);
         theta += vtheta * timeSample;
-        x += (float)1/2 * ax * timeSample * timeSample + vx * timeSample;
-        vx += timeSample * ax;
-//        if(ax_last * ax < 0)
-//        {
-////            x += vx * 0.002;
-//            vx /= 4;
-//        }
-        if(ax * vx < 0)
-            cnt++;
+    }
+
+    public void update_x(float timeSample)
+    {
+        last_stop --;
+//        if (Math.abs(ax) > 100)
+//            ax = 100 * ax / ax;
+
+        if (Math.abs(ax) < 2.0f)
+            ax = 0;
+//        if (Math.abs(vx) < 1.0f)
+//            vx = 0;
+
+        if (ax * vx < 0)
+            opposite_direction ++;
         else
-            cnt = 0;
-        if(cnt >= 10)
+            opposite_direction = 0;
+
+        if (last_stop > 0)
         {
-            cnt = 0;
-            vx = 0;
-        }
-        ax_last = ax;
-        if(x <= 0)
-        {
-            x = 0;
-            vx = 0;
+            if (ax == 0)
+                last_stop = 0;
             ax = 0;
-        }
-        if(x >= 50)
-        {
-            x = 50;
             vx = 0;
-            ax = 0;
         }
+
+        if (ax == 0)
+            still_zero ++;
+        else
+            still_zero = 0;
+
+        if (still_zero > 2)
+        {
+            ax = 0;
+            vx = 0;
+        }
+
+        if (Math.abs(ax) * timeSample > Math.abs(vx) && ax * vx < 0 && opposite_direction > 5)
+        {
+            ax = 0;
+            vx = 0;
+            last_stop = 200;
+        }
+
+        x += 1.0f/2.0f * ax * timeSample * timeSample + vx * timeSample;
+        vx += ax * timeSample;
+
+        if (x > 54 || x < -4)
+        {
+            x = Math.max(x, -4);
+            x = Math.min(x, 54);
+            ax = 0;
+            vx = 0;
+//            last_stop = 50;
+        }
+
+        Log.d("curr x : ", Float.toString(x));
+        Log.d("curr acc : ", Float.toString(ax));
+        Log.d("curr vel : ", Float.toString(vx));
     }
 
     public float getVx() {

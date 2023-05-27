@@ -37,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Sensor proxi_sensor;
 
+    private float last_ax = 0;
+
+    private  long s2n = 1000000000;
+    private long last_sample = 0;
+
     private float aCircleUp;
 
     MainBoardCanvas boardCanvas;
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         proxi_sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, gyroscope, sensorManager.SENSOR_DELAY_GAME);
         sensorManager.registerListener(this, accelerometer, sensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, proxi_sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensorListener = event.sensor;
+        if (last_sample == 0)
+            last_sample = event.timestamp;
 
         if(sensorListener.getType() == Sensor.TYPE_GYROSCOPE)
         {
@@ -92,10 +99,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if(sensorListener.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
         {
+            aCircleUp = (float) (event.values[1] * 100 * (50/20));
+
+
             float ax = event.values[0];
-            aCircleUp = (float) (event.values[2] * 100 * (50/20));
-            alast += (0.1) * (ax - alast);
-            racket.setAx((float) (-alast * 100));
+//            alast += (0.1) * (ax - alast);
+            float tmp = ax;
+            ax = 0.5f* ax + 0.5f * last_ax;
+            last_ax = tmp;
+            Log.d("got acc : ", Float.toString(ax));
+            racket.setAx((float) (ax * 132));
+            racket.update_x((float)((float) event.timestamp - last_sample) / s2n);
+            last_sample = event.timestamp;
             boardCanvas.invalidate();
         }
     }
