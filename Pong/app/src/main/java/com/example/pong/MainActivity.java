@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float alast = 0;
     private Racket racket;
 
+    private double lastTimeTouch;
+
     private Timer timer;
 
     private Handler handler;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     MainBoardCanvas boardCanvas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        lastTimeTouch = 0;
 //        Log.d("MainActivity", "HELOOOO");
         super.onCreate(savedInstanceState);
         circle = new Circle(25, 5,  (float)1.5);
@@ -127,16 +130,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float x = boardCanvas.getWidth();
         float y = boardCanvas.getHeight();
 
+        double time = event.getEventTime();
+
         float x_touch = (event.getX() / x) * 50;
         float y_touch = (event.getY() / y) * 100;
 
 
-
-        if(racket.isPointInside(x_touch, y_touch, 5))
+        if(racket.isPointInside(x_touch, y_touch, 5) && time - lastTimeTouch > 500)
         {
+            lastTimeTouch = time;
             circle.init();
             racket.init();
             boardCanvas.invalidate();
+            if(boardCanvas.getState() == 2)
+            {
+                boardCanvas.setState(0);
+            }
+            else
+                boardCanvas.setState(boardCanvas.getState() + 1);
         }
 
         return true;
