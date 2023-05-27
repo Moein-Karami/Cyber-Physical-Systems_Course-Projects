@@ -92,6 +92,8 @@ public class Circle
         }
         if(y < 0)
             return true;
+        if(y > 100)
+            return true;
         return false;
     }
 
@@ -100,8 +102,14 @@ public class Circle
             vy = -vy;
             y = 0;
         }
-        else
+        if(y > 100)
+        {
+            y = 100;
+            vy = -vy;
+        }
+        else {
             vx = -vx;
+        }
     }
 
     public void init() {
