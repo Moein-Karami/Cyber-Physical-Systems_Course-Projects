@@ -98,7 +98,7 @@ public class Racket
 //        if (Math.abs(ax) > 100)
 //            ax = 100 * ax / ax;
 
-        if (Math.abs(ax) > 750)
+        if (Math.abs(ax) > 1000)
             last_stop = 0;
         if (Math.abs(ax) < 3.0f)
             ax = 0;

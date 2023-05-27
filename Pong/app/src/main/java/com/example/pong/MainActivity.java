@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(sensorListener.getType() == Sensor.TYPE_GYROSCOPE)
         {
             float vtheta = event.values[2] * (float)(360 / (2 * 3.14));
-            racket.setVtheta(vtheta);
+            racket.setVtheta(-vtheta);
             boardCanvas.invalidate();
 
         }
