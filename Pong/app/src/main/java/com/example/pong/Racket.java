@@ -132,7 +132,7 @@ public class Racket
         {
             ax = 0;
             vx = 0;
-            last_stop = 200;
+            last_stop = 175;
         }
 
         x += 1.0f/2.0f * ax * timeSample * timeSample + vx * timeSample;
