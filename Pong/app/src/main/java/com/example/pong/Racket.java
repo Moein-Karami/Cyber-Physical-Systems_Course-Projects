@@ -13,21 +13,9 @@ public class Racket
     private float vtheta;
     private float vx;
     private float ax;
-    private float ax_last;
-
     private int last_stop = 0;
-
     private int still_zero = 0;
-
-    private int count;
-    private int lastCollide;
-
-    private int cnt = 0;
-
-    private float ax_dir = 0;
-
     private int opposite_direction = 0;
-
     public Racket(float inp_x, float inp_y, float inp_length)
     {
         x = inp_x;
@@ -37,9 +25,6 @@ public class Racket
         vtheta = 0;
         vx = 0;
         ax = 0;
-        ax_last = 0;
-        count = 0;
-        lastCollide = 0;
     }
 
     public float getX() {
