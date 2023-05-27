@@ -19,10 +19,12 @@ public class Racket
 
     private int still_zero = 0;
 
-    int count;
-    int lastCollide;
+    private int count;
+    private int lastCollide;
 
-    int cnt = 0;
+    private int cnt = 0;
+
+    private float ax_dir = 0;
 
     private int opposite_direction = 0;
 
@@ -84,16 +86,27 @@ public class Racket
         theta += vtheta * timeSample;
     }
 
+    private float max_ax = 0;
+
     public void update_x(float timeSample)
     {
+        max_ax = Math.max(Math.abs(ax), max_ax);
+        Log.d("Max ax", Float.toString(max_ax));
         last_stop --;
 //        if (Math.abs(ax) > 100)
 //            ax = 100 * ax / ax;
 
-        if (Math.abs(ax) < 2.0f)
+        if (Math.abs(ax) > 750)
+            last_stop = 0;
+        if (Math.abs(ax) < 3.0f)
             ax = 0;
 //        if (Math.abs(vx) < 1.0f)
 //            vx = 0;
+
+        if (ax == 0)
+            still_zero ++;
+        else
+            still_zero = 0;
 
         if (ax * vx < 0)
             opposite_direction ++;
@@ -102,19 +115,13 @@ public class Racket
 
         if (last_stop > 0)
         {
-            if (ax == 0)
-                last_stop = 0;
             ax = 0;
             vx = 0;
         }
 
-        if (ax == 0)
-            still_zero ++;
-        else
-            still_zero = 0;
-
         if (still_zero > 2)
         {
+            last_stop = 0;
             ax = 0;
             vx = 0;
         }
